@@ -1,0 +1,49 @@
+version: '3'
+
+networks:
+  network_7dtd:
+    external:
+      name: network_7dtd
+
+volumes:
+  sdtd-config:
+    name: 7dtd-config
+    driver: local
+  sdtd-maps:
+    name: 7dtd-maps
+    driver: local
+  sdtd-mods:
+    name: 7dtd-mods
+    driver: local
+
+services:
+  7dtdserver:
+    build: .
+    container_name: 7dtdserver-testing
+    environment:
+      - SEVEN_DAYS_TO_DIE_START_MODE=3
+      - SEVEN_DAYS_TO_DIE_BETA=0
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - "sdtd-config:/app/steam/sdtd/config/"
+      - "sdtd-maps:/app/steam/.local/share/7DaysToDie/Saves"
+      - "sdtd-mods:/app/steam/.steam/steam/steamapps/common/7 Days To Die/Mods"
+    networks:
+      - network_7dtd
+    ports:
+      - 26900:26900/tcp
+      - 26900:26900/udp
+      - 26901:26901/udp
+      - 26902:26902/udp
+      - 26903:26903/udp
+      #- 8080:8080/tcp #OPTIONAL WEBADMIN
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '5'
+      driver: json-file
+
+
+
