@@ -27,17 +27,17 @@ check_space()
 # Signal handler for stoping container
 signal_handler()
 {
-	echo "Shutdown signal received.."
+    echo "Shutdown signal received.."
 
-	# Execute the telnet shutdown commands
-	${WORKDIR}/${USER}/shutdown.sh
-	signal=$!
-	wait "$signal"
+    # Execute the telnet shutdown commands
+    ${WORKDIR}/${USER}/shutdown.sh
+    signal=$!
+    wait "$signal"
 
-	sleep 4
+    sleep 4
 
-	echo "Exiting.."
-	exit 0
+    echo "Exiting.."
+    exit 0
 }
 
 start_sdtd()
