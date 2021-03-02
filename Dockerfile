@@ -79,10 +79,3 @@ VOLUME [ \
 
 # Set default command
 ENTRYPOINT ["./docker-entrypoint.sh"]
-
-
-
-
-
-
-

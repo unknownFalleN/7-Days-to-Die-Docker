@@ -11,16 +11,16 @@ STEAM_CMD_PARAMETER="+Login anonymous +@sSteamCmdForcePlatformType linux +force_
 check_space()
 {
     echo "Checking free space ..."
-    free=`df -k --output=avail ${WORKDIR} | tail -n1`
-    freeGB=$(expr $free / 1024 / 1024)
-    if [[ $free -lt 12582912 ]]; then  # 12G = 12*1024*1024k
+    free=$(df -k --output=avail "${WORKDIR}" | tail -n1)
+    freeGB=$((free / 1024 / 1024))
+    if [[ ${free} -lt 12582912 ]]; then  # 12G = 12*1024*1024k
         echo "ERROR: Not enough space to install Game"
         echo "Needed: 12 GB"
-        echo "Available: $freeGB GB"
+        echo "Available: ${freeGB} GB"
         echo "Exit script..."
         exit 1
     else
-        echo "Enough space $freeGB GB available. Continue installation ..."
+        echo "Enough space ${freeGB} GB available. Continue installation ..."
     fi
 }
 
@@ -30,7 +30,7 @@ signal_handler()
     echo "Shutdown signal received.."
 
     # Execute the telnet shutdown commands
-    ${WORKDIR}/${USER}/shutdown.sh
+    "${WORKDIR}/${USER}/shutdown.sh"
     signal=$!
     wait "$signal"
 
@@ -47,7 +47,7 @@ start_sdtd()
     echo ""
     # 7 Days to Die 64-bit version of steamclient.so
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${WORKDIR}/${USER}/sdtd/7DaysToDieServer_Data/Plugins/x86_64
-    ${WORKDIR}/${USER}/sdtd/7DaysToDieServer.x86_64 ${SEVEN_DAYS_TO_DIE_SERVER_STARTUP_ARGUMENTS} -configfile=${WORKDIR}/${USER}/sdtd/config/serverconfig.xml &
+    "${WORKDIR}/${USER}/sdtd/7DaysToDieServer.x86_64" "${SEVEN_DAYS_TO_DIE_SERVER_STARTUP_ARGUMENTS}" -configfile="${WORKDIR}/${USER}/sdtd/config/serverconfig.xml" &
     child=$!
     wait "${child}"
 }
@@ -57,7 +57,7 @@ start_steamcmd()
     echo ""
     echo "Install steamcmd app. This will take a few minutes ..."
     echo ""
-    steamcmd ${STEAM_CMD_PARAMETER} +app_update ${APP_ID} ${SEVEN_DAYS_TO_DIE_BRANCH} -validate +quit
+    steamcmd "${STEAM_CMD_PARAMETER}" +app_update "${APP_ID}" "${SEVEN_DAYS_TO_DIE_BRANCH}" -validate +quit
     echo ""
     echo "Finished install app 7 Days to Die."
     echo ""
@@ -70,7 +70,7 @@ start_steamcmd()
             echo ""
             echo "No serverconfig available. Copy default serverconfig to shared docker volume."
             echo ""
-            cp ${WORKDIR}/${USER}/sdtd/serverconfig.xml ${WORKDIR}/${USER}/sdtd/config/serverconfig.xml
+            cp "${WORKDIR}/${USER}/sdtd/serverconfig.xml" "${WORKDIR}/${USER}/sdtd/config/serverconfig.xml"
         else
             echo ""
             echo "Changing 7 Days to Die Serverconfig"
@@ -101,9 +101,9 @@ check_space
 trap 'signal_handler' SIGINT SIGTERM
 
 SEVEN_DAYS_TO_DIE_BRANCH=""
-if [ ${SEVEN_DAYS_TO_DIE_BETA} == 1 ]
+if [ "${SEVEN_DAYS_TO_DIE_BETA}" == 1 ]
 then
-    SEVEN_DAYS_TO_DIE_BRANCH = "-beta latest_experimental"
+    SEVEN_DAYS_TO_DIE_BRANCH="-beta latest_experimental"
 fi
 
 case $SEVEN_DAYS_TO_DIE_START_MODE in
